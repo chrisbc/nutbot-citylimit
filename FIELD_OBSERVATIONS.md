@@ -19,6 +19,14 @@
 - All material will be mulched in a 1hp Hansa electric mulcher and composted
 - No pre-screening, sorting, or debris deflection required
 - Manual clog clearing accepted during testing phase
+- Twig and branch diameter varies considerably — small twigs to substantial branches
+  present on lawn at the same time; clog risk varies accordingly
+- Leaves currently low volume but will increase significantly as autumn progresses
+- Wet, heavy leaves are harder to collect and damage lawn if left — motivates frequent passes
+- **Operational target: daily passes during peak season**
+  - Keeps leaf/nut volume manageable per run
+  - Prevents leaves becoming wet and matted
+  - Protects lawn from smothering and acorn germination
 
 **3. Terrain — Holes in Lawn**
 - Where holes have developed, acorns fall in and are effectively lost
