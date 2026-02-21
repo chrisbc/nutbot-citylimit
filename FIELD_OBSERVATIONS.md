@@ -15,11 +15,10 @@
 **2. Debris — Twigs and Leaves**
 - Significant volume of twigs and leaves mixed in with acorns
 - Both will interfere with the comb-stripper mechanism (twigs jam, leaves wrap/clog drum)
-- Options under consideration:
-  - Accept mixed collection into bag, compost together (simplest)
-  - Pre-deflector bar ahead of drum to push large sticks aside
-  - Finger spacing tuned to pass leaves but retain acorns (uncertain feasibility)
-- Open question: twig size relative to acorns? Leaf condition (wet/matted vs loose)?
+- **Design decision: accept mixed collection — nuts, twigs and leaves all collected together**
+- All material will be mulched in a 1hp Hansa electric mulcher and composted
+- No pre-screening, sorting, or debris deflection required
+- Manual clog clearing accepted during testing phase
 
 **3. Terrain — Holes in Lawn**
 - Where holes have developed, acorns fall in and are effectively lost
@@ -36,8 +35,6 @@
 
 ## Open Questions from Session 1
 
-- [ ] Twig size distribution — mostly small (<10mm dia) or larger?
-- [ ] Leaf condition during typical collection window — wet and matted, or dry and loose?
 - [ ] How quickly do acorns embed after falling? (days vs weeks?)
 - [ ] What is the total drop area in m²?
 - [ ] Target collection frequency during peak fall?
