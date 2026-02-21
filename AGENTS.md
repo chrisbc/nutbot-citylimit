@@ -52,6 +52,61 @@ When working on this project, **always append a log entry** to `.llm/log.jsonl` 
 - **File path**: Always `.llm/log.jsonl` in project root
 - **Create if missing**: If `.llm/log.jsonl` doesn't exist, create it with the first entry
 
+## /log Command
+
+### Usage
+
+```
+/log [notes]
+```
+
+**Purpose**: Create or update the session log entry, optionally with user notes.
+
+### Behavior
+
+When user invokes `/log`:
+
+1. **Ask for user notes** (if not provided in command):
+   ```
+   "Add any notes for this log entry? (press Enter to skip)"
+   ```
+
+2. **Gather session data**:
+   - Review git commits made this session: `git log --oneline --since="session start"`
+   - Review files read, created, modified during conversation
+   - Calculate duration from first user message to now
+   - Note token usage if available
+
+3. **Append entry** to `.llm/log.jsonl`
+
+4. **Confirm**: "Logged session to .llm/log.jsonl"
+
+### Example Invocation
+
+```
+User: /log decided to use RoboClaw over RC ESC
+Agent: 
+- Gathers session data
+- Appends entry with user_notes: "decided to use RoboClaw over RC ESC"
+- Confirms log entry created
+```
+
+### On Session Exit
+
+When a session ends naturally or user says "bye", "done", etc., the agent should:
+
+1. Ask: "Log this session before exiting?"
+2. If yes, run `/log` workflow
+3. Then exit
+
+### Notes Field
+
+The `user_notes` field captures:
+- Key decisions made
+- Blockers encountered  
+- Next steps identified
+- Any other context the user wants preserved
+
 ### Example Log Entry
 
 ```json
