@@ -11,6 +11,7 @@ When working on this project, **always append a log entry** to `.llm/log.jsonl` 
 ```json
 {
   "timestamp": "2025-02-22T10:30:00Z",
+  "session_start": "2025-02-22T09:15:00Z",
   "project_name": "NutBot CityLimit",
   "project_root": "nutbot-citylimit",
   "model": "claude-3-5-sonnet",
@@ -33,12 +34,13 @@ When working on this project, **always append a log entry** to `.llm/log.jsonl` 
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `timestamp` | ISO 8601 string | Yes | Session start time (UTC) |
+| `timestamp` | ISO 8601 string | Yes | When the log entry was created (UTC) |
+| `session_start` | ISO 8601 string | No | When the session began (UTC, estimated from first commit or heuristic) |
 | `project_name` | string | Yes | Human-readable project name |
 | `project_root` | string | Yes | Root folder name (for aggregation) |
 | `model` | string | Yes | Model identifier |
 | `tool` | string | Yes | Tool name (claude-code, opencode, cursor, etc.) |
-| `duration_min` | number | Yes | Approximate session duration in minutes |
+| `duration_min` | number | No | Approximate session duration in minutes |
 | `tokens_in` | number | No | Input tokens used |
 | `tokens_out` | number | No | Output tokens generated |
 | `commits` | string[] | No | Git commit hashes made during session |
@@ -49,12 +51,36 @@ When working on this project, **always append a log entry** to `.llm/log.jsonl` 
 | `summary` | string | Yes | Brief description of session work |
 | `user_notes` | string | No | Optional user-provided notes |
 
+### Data Accuracy
+
+Not all fields are equally reliable. LLM agents typically don't have direct access to their own session metadata, so some values are best-effort estimates:
+
+- **Precise**: `timestamp`, `model`, `tool`, `commits`, `files`, `summary`
+- **Estimated**: `session_start`, `duration_min`, `tokens_in`/`tokens_out`
+
 ### Implementation Notes
 
 - **Append only**: Each session adds one line, never modify existing entries
 - **JSONL format**: One valid JSON object per line (no trailing commas, no array wrapper)
 - **File path**: Always `.llm/log.jsonl` in project root
 - **Create if missing**: If `.llm/log.jsonl` doesn't exist, create it with the first entry
+
+## /log-start Command
+
+### Usage
+
+```
+/log-start [topic]
+```
+
+**Purpose**: Mark the start of a work session. Records timestamp and optional topic to `.llm/.session` for later use by `/log`.
+
+### Behavior
+
+1. Write `{"start":"<now UTC>","topic":"<topic if provided>"}` to `.llm/.session`
+2. Confirm: "Session started: *<topic>*" (or just "Session started." if no topic)
+
+**Notes**: Overwrites any existing `.llm/.session`. The file is transient and should be in `.gitignore`.
 
 ## /log Command
 
@@ -70,30 +96,24 @@ When working on this project, **always append a log entry** to `.llm/log.jsonl` 
 
 When user invokes `/log`:
 
-1. **Ask for user notes** (if not provided in command):
-   ```
-   "Add any notes for this log entry? (press Enter to skip)"
-   ```
+1. **Check for session file**: Read `.llm/.session` if it exists:
+   - Use `start` as `session_start` (precise, user-provided)
+   - Use `topic` as a seed for writing the `summary`
+   - Calculate `duration_min` from `start` to now
 
-2. **Gather session data**:
-   - Review git commits made this session: `git log --oneline --since="session start"`
-   - Review files read, created, modified during conversation
-   - Calculate duration from first user message to now
+2. **If no notes provided**: Ask "Add any notes for this log entry? (press Enter to skip)"
+
+3. **Gather session data**:
+   - If session file exists with `start`, use `git log --oneline --since="<start>"` for accurate commit filtering
+   - Otherwise, `git log --oneline -10` and use best judgement
+   - Track files read, created, modified during conversation
    - Note token usage if available
 
-3. **Append entry** to `.llm/log.jsonl`
+4. **Append entry** to `.llm/log.jsonl`
 
-4. **Confirm**: "Logged session to .llm/log.jsonl"
+5. **Confirm**: "Logged session to .llm/log.jsonl"
 
-### Example Invocation
-
-```
-User: /log decided to use RoboClaw over RC ESC
-Agent: 
-- Gathers session data
-- Appends entry with user_notes: "decided to use RoboClaw over RC ESC"
-- Confirms log entry created
-```
+**Note**: `/log` does not delete `.llm/.session` — it persists until the next `/log-start` overwrites it. This allows multiple `/log` calls per session.
 
 ### On Session Exit
 
@@ -107,14 +127,14 @@ When a session ends naturally or user says "bye", "done", etc., the agent should
 
 The `user_notes` field captures:
 - Key decisions made
-- Blockers encountered  
+- Blockers encountered
 - Next steps identified
 - Any other context the user wants preserved
 
 ### Example Log Entry
 
 ```json
-{"timestamp":"2025-02-22T10:30:00Z","project_name":"NutBot CityLimit","project_root":"nutbot-citylimit","model":"claude-3-5-sonnet","tool":"opencode","duration_min":25,"tokens_in":15000,"tokens_out":8000,"commits":["e263c5e"],"files":{"read":["PLAN.md","TRACTOR.md","IMPLEMENT_NUT_COLLECTOR.md","FIELD_OBSERVATIONS.md","DESIGN_VISUALS.md"],"created":["README.md","tractor/MOTOR_CONTROLLER.md","tractor/SENSORS_AND_COMPUTE.md","tractor/RC_ESC_ANALYSIS.md","tractor/OEM_CONTROLLER_ANALYSIS.md"],"modified":[]},"summary":"Add project README, motor controller research, sensors/compute docs, ROS2 references","user_notes":""}
+{"timestamp":"2025-02-22T10:30:00Z","session_start":"2025-02-22T09:15:00Z","project_name":"NutBot CityLimit","project_root":"nutbot-citylimit","model":"claude-3-5-sonnet","tool":"opencode","duration_min":25,"commits":["e263c5e"],"files":{"read":["PLAN.md","TRACTOR.md"],"created":["README.md","tractor/MOTOR_CONTROLLER.md"],"modified":[]},"summary":"Add project README and motor controller research","user_notes":""}
 ```
 
 ## Project Context
