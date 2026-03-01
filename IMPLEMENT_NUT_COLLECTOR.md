@@ -54,6 +54,26 @@ All material composted via 1hp Hansa electric mulcher.
 | Approach/rake angle | -20° to +20° |
 | Tip/knob type | bare J-bend, loop, welded ball, plastic bead |
 
+### Tested — Session 2 (2026-02-27)
+
+| Parameter | Value | Result |
+|---|---|---|
+| Wire | 1.6mm 316 stainless welding rod | Workable material |
+| Hole size | 1.5mm in timber batten | Tight fit, difficult to drill consistently |
+| Tip | 3mm female bullet connector (crimped) | **FAILED** — too long, insufficient capture |
+| Spacing | 15mm centres, 4×5 array | **Promising** — fingers spread around nuts correctly |
+| Test surface | Grass + hard surface, real acorns | Failure consistent on both |
+
+**Conclusions:**
+- **Spacing (15mm) is approximately correct** — fingers spread around acorns as intended;
+  this variable can be considered provisionally validated
+- **Tip geometry and wire tension are the failure modes** — bullet connector is too long,
+  and wire lacked sufficient spring force to close over and retain the acorn securely
+- **Manufacturing is a hard blocker regardless of scale** — drilling 1.5mm holes and pressing
+  in wire requires fine dexterity and causes hand strain even for a small batten; this method
+  is not viable for DIY construction
+- If DIY drum continues: tip design and assembly method both need a rethink before further builds
+
 ## Comb / Stripper
 
 - Fixed tines at ~10 o'clock position on drum rotation
@@ -96,6 +116,56 @@ Used to validate finger geometry before committing to final implement build.
 | 15mm clevis pin + R-clip | Hitch pin | Hardware store |
 | Anderson SB50 connector | Power umbilical | Electrical supplier |
 | 6-pin aviation plug | Signal umbilical | Electronics supplier |
+
+## Alternative: BagaNut Collection Wheels
+
+Commercial proven wheels rather than DIY drum. Eliminates finger geometry development
+and manual assembly entirely.
+
+### BagaNut Wheel Options (for acorns)
+
+| Code | Colour | Fits | Est. price |
+|------|--------|------|------------|
+| F0031 | Light green | Pecan, large acorns, hazelnuts, crabapples, almonds | $11–$58 |
+| F0033 | Blue | **Small acorns**, joba bean, coffee bean | $11–$58 |
+
+Plan: buy 4× F0031 + 4× F0033 to evaluate geometry and fit across acorn size range.
+
+### Reverse Engineering / 3D Print Investigation
+
+Scanning and printing replacement or modified wheels for personal use is a viable
+cost-reduction path. Not for commercial reproduction.
+
+**Scanning options:**
+- Photogrammetry (free — Polycam, Scaniverse, Meshroom) — adequate for body geometry,
+  may struggle with thin tines
+- Structured light scanner (e.g. Revopoint, ~$500–2000) — much better for fine tine detail
+- Strategy: buy one wheel first, scan it, then decide on full set purchase
+
+**Printing material — critical choice:**
+
+The tines must flex over acorns and spring back thousands of times without fatigue failure.
+Layer lines from FDM printing are a known weak point when oriented perpendicular to flex direction.
+
+| Material | Flex fatigue | Outdoor UV | Print method | Notes |
+|----------|-------------|------------|--------------|-------|
+| TPU | Good | Fair | FDM (desktop) | Best desktop option for flexible tines |
+| SLS Nylon (PA12) | Excellent | Good | SLS (print service) | Closest to injection-moulded — recommended |
+| PETG | Poor | Fair | FDM (desktop) | Will crack at tine roots under repeated flex |
+| PLA | Very poor | Poor | FDM (desktop) | Not viable outdoors |
+
+*FDM = Fused Deposition Modeling — standard desktop 3D printing (filament melted and deposited layer by layer)*
+
+**Recommended path:**
+1. Purchase 1× F0033 wheel (~$11–15) to scan and physically evaluate
+2. Scan with photogrammetry first; use structured light if tine detail is insufficient
+3. Print test copy in TPU on desktop printer — evaluate flex and fatigue
+4. If TPU inadequate, get SLS nylon quote via print service (Craftcloud, JLCPCB, Shapeways)
+5. Compare per-unit print cost vs purchase price before committing to full print strategy
+
+**Economics:** Printing only makes sense if you need many replacements or want to iterate
+on tine geometry (e.g. adjust spacing for your specific acorn size). At $11/wheel the bar
+is low — evaluate honestly after test print.
 
 ## Open Items
 
